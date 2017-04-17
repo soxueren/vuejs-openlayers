@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "VueJS plugin for Openlayers Map",
   "main": "src/vue-openlayers.js",
+  "private": false,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/karma/bin/karma start karma.conf.js"
   },
   "repository": {
     "type": "git",
@@ -30,5 +31,8 @@
   "bugs": {
     "url": "https://github.com/rukandax/vue-openlayers/issues"
   },
-  "homepage": "https://github.com/rukandax/vue-openlayers#readme"
+  "homepage": "https://github.com/rukandax/vue-openlayers#readme",
+  "dependencies": {
+    "ol": "^4.1.0"
+  }
 }
