@@ -1,0 +1,34 @@
+{
+  "name": "vue-openlayers",
+  "version": "1.0.0",
+  "description": "VueJS plugin for Openlayers Map",
+  "main": "src/vue-openlayers.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rukandax/vue-openlayers.git"
+  },
+  "keywords": [
+    "vuejs",
+    "vuejs2",
+    "vue",
+    "vue2",
+    "vue-components",
+    "vue-component",
+    "javascript",
+    "openlayers",
+    "openlayers3",
+    "openlayers4",
+    "javascript-library",
+    "javascript-plugin",
+    "vue-plugin"
+  ],
+  "author": "Rukanda Faridsi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rukandax/vue-openlayers/issues"
+  },
+  "homepage": "https://github.com/rukandax/vue-openlayers#readme"
+}
