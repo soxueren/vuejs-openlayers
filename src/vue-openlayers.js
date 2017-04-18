@@ -270,6 +270,12 @@ export default {
     this.Maps[element].updateSize()
   },
 
+  updateSizeAll: function () {
+    for (var index in this.Maps) {
+      this.Maps[index].updateSize()
+    }
+  },
+
   /* Add Marker
   **
   ** Param
