@@ -170,11 +170,7 @@ export default {
     this.addView(setting)
 
     this.Maps[setting.element] = new OlMap({
-      layers: [
-        new OlTile({
-          source: new OlOSM()
-        })
-      ],
+      layers: [],
       controls: OlControl.defaults({
         attribution: (setting.enableAttibution !== undefined && setting.enableAttibution !== false),
         zoom: (setting.enableZoomButton !== undefined && setting.enableZoomButton !== false)
