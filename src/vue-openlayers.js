@@ -152,7 +152,7 @@ export default {
       return
     }
 
-    for(var index in this.Maps[setting.element]['layers']) {
+    for (var index in this.Maps[setting.element]['layers']) {
       this.setVisibleLayer(setting.element, index, 0)
     }
 
@@ -161,7 +161,7 @@ export default {
     } else {
       this.setVisibleLayer(setting.element, setting.name, 1)
     }
-  }
+  },
 
   getVisibleLayer: function (element, name) {
     if (this.Maps[element] === undefined) {
@@ -335,7 +335,7 @@ export default {
   **   - enableDoubleClickZoom (Boolean)
   */
   init: function (setting) {
-    if (this.Maps[element] !== undefined) {
+    if (this.Maps[setting.element] !== undefined) {
       console.log('Map already exist')
       return
     }
