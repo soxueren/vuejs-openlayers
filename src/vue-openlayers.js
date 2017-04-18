@@ -135,7 +135,7 @@ export default {
   },
 
   updateSize: function (element) {
-    this.Maps[setting.element].updateSize()
+    this.Maps[element].updateSize()
   },
 
   /* Add Marker
