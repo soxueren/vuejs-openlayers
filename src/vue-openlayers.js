@@ -35,6 +35,15 @@ export default {
     return this.Maps[element]
   },
 
+  /* Add New View
+  **
+  ** Param
+  ** - setting
+  **   type = Object
+  **   data =
+  **   - center (Array)
+  **   - Zoom (Number)
+  */
   addView: function (setting) {
     this.Views[setting.element] = new OlView({
       center: setting.center,
@@ -64,7 +73,7 @@ export default {
   **   data =
   **   - element (String)
   **   - name (String)
-  **   - type (Object String {OSM, XYZ, Vector})
+  **   - type (String {OSM, XYZ, Vector})
   **   - url (String) -- If XYZ
   */
   addLayer: function (setting) {
@@ -93,7 +102,7 @@ export default {
     this.Maps[setting.element]['layers'][setting.name] = layer
     this.Maps[setting.element].addLayer(this.Maps[setting.element]['layers'][setting.name])
     this.Maps[setting.element].updateSize()
-    
+
     return this.Maps[setting.element]['layers'][setting.name]
   },
 
@@ -123,6 +132,10 @@ export default {
 
   transformExtent: function (extent) {
     return OlProj.transformExtent(extent, 'EPSG:3857', 'EPSG:4326')
+  },
+
+  updateSize: function (element) {
+    this.Maps[setting.element].updateSize()
   },
 
   /* Add Marker
@@ -192,6 +205,7 @@ export default {
     })
 
     this.Maps[setting.element]['layers'] = []
+
     return this.Maps[setting.element]
   }
 }
