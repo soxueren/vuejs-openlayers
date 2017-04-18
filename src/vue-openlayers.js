@@ -32,11 +32,6 @@ export default {
   ** - element (String)
   */
   getMap: function (element) {
-    if (this.Maps[element] === undefined) {
-      console.log('Map undefined')
-      return
-    }
-
     return this.Maps[element]
   },
 
@@ -52,7 +47,7 @@ export default {
   addView: function (setting) {
     if (this.Views[setting.element] !== undefined) {
       console.log('View already exist')
-      return
+      return null
     }
 
     this.Views[setting.element] = new OlView({
@@ -64,38 +59,18 @@ export default {
   },
 
   getView: function (element) {
-    if (this.Views[element] === undefined) {
-      console.log('View undefined')
-      return
-    }
-
     return this.Views[element]
   },
 
   getLayers: function (element) {
-    if (this.Maps[element] === undefined) {
-      console.log('Map undefined')
-      return
-    }
-
     return this.Maps[element]['layers']
   },
 
   getLayer: function (element, name) {
-    if (this.Maps[element] === undefined) {
-      console.log('Map undefined')
-      return
-    }
-
-    if (this.Maps[element]['layers'][name] === undefined) {
-      console.log('Layer undefined')
-      return
-    }
-
     return this.Maps[element]['layers'][name]
   },
 
-  /* Set Layer
+  /* Add Layer
   **
   ** Param
   ** - setting
@@ -106,20 +81,12 @@ export default {
   **   - type (String {OSM, XYZ, Vector})
   **   - url (String) -- If XYZ
   */
-  setLayer: function (setting) {
+  addLayer: function (setting) {
     if (this.Maps[setting.element] === undefined) {
       console.log('Map undefined')
-      return
+      return null
     }
 
-    if (this.Maps[setting.element]['layers'][setting.name] !== undefined) {
-      this.Maps[setting.element].removeLayer(this.Maps[setting.element]['layers'][setting.name])
-    }
-
-    for (var index in this.Maps[setting.element]['layers']) {
-      this.setVisibleLayer(setting.element, index, 0)
-    }
-    
     var layer
 
     switch (setting.type) {
@@ -149,17 +116,25 @@ export default {
     return this.Maps[setting.element]['layers'][setting.name]
   },
 
-  getVisibleLayer: function (element, name) {
-    if (this.Maps[element] === undefined) {
+  /* Set Layer
+  **
+  ** Param
+  ** -- addLayer --
+  */
+  setLayer: function (setting) {
+    if (this.Maps[setting.element] === undefined) {
       console.log('Map undefined')
-      return
+      return null
     }
 
-    if (this.Maps[element]['layers'][name] === undefined) {
-      console.log('Layer undefined')
-      return
+    if (this.Maps[setting.element]['layers'][setting.name] !== undefined) {
+      this.Maps[setting.element].removeLayer(this.Maps[setting.element]['layers'][setting.name])
     }
 
+    return this.addLayer(setting)
+  },
+
+  getVisibleLayer: function (element, name) {
     return this.Maps[element]['layers'][name].getVisible()
   },
 
@@ -177,26 +152,60 @@ export default {
     this.Maps[element]['layers'][name].setVisible(isVisible)
   },
 
-  getExtent: function (element) {
+  getMarkerLayers: function (element) {
+    return this.Maps[element]['markers']
+  },
+
+  getMarkerLayer: function (element, name) {
+    return this.Maps[element]['markers'][name]
+  },
+
+  /* Add Marker Layer
+  **
+  ** Param
+  **  - element (String)
+  **  - name (String)
+  */
+  addMarkerLayer: function (element, name) {
+    if (this.Maps[element] === undefined) {
+      console.log('Map undefined')
+      return null
+    }
+
+    if (this.Maps[element]['markers'][name] === undefined) {
+      var layer = new OlLayerVector({ source: new OlSourceVector({features: []}) })
+
+      this.Maps[element]['markers'][name] = layer
+      this.Maps[element].addLayer(this.Maps[element]['markers'][name])
+    }
+
+    this.updateSize(element)
+    return this.Maps[element]['markers'][name]
+  },
+
+  getVisibleMarkerLayer: function (element, name) {
+    return this.Maps[element]['markers'][name].getVisible()
+  },
+
+  setVisibleMarkerLayer: function (element, name, isVisible) {
     if (this.Maps[element] === undefined) {
       console.log('Map undefined')
       return
     }
 
-    if (this.Views[element] === undefined) {
-      console.log('View undefined')
+    if (this.Maps[element]['markers'][name] === undefined) {
+      console.log('Layer undefined')
       return
     }
 
+    this.Maps[element]['markers'][name].setVisible(isVisible)
+  },
+
+  getExtent: function (element) {
     return this.Views[element].calculateExtent(this.Maps[element].getSize())
   },
 
   getZoom: function (element) {
-    if (this.Views[element] === undefined) {
-      console.log('View undefined')
-      return
-    }
-
     return this.Views[element].getZoom()
   },
 
@@ -216,11 +225,6 @@ export default {
   },
 
   getCenter: function (element) {
-    if (this.Views[element] === undefined) {
-      console.log('View undefined')
-      return
-    }
-
     return this.Views[element].getCenter()
   },
 
@@ -281,7 +285,7 @@ export default {
       return
     }
 
-    if (this.Maps[setting.element]['layers'][setting.layer] === undefined) {
+    if (this.Maps[setting.element]['markers'][setting.layer] === undefined) {
       console.log('Layer undefined')
       return
     }
@@ -302,7 +306,7 @@ export default {
     ])
 
     feature.setId(setting.id)
-    this.Maps[setting.element]['layers'][setting.layer].getSource().addFeature(feature)
+    this.Maps[setting.element]['markers'][setting.layer].getSource().addFeature(feature)
   },
 
   /* Initialize Openlayers Maps
@@ -344,6 +348,7 @@ export default {
     })
 
     this.Maps[setting.element]['layers'] = []
+    this.Maps[setting.element]['markers'] = []
 
     return this.Maps[setting.element]
   }
