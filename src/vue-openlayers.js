@@ -32,6 +32,11 @@ export default {
   ** - element (String)
   */
   getMap: function (element) {
+    if (this.Maps[element] === undefined) {
+      console.log('Map undefined')
+      return
+    }
+
     return this.Maps[element]
   },
 
@@ -45,6 +50,11 @@ export default {
   **   - Zoom (Number)
   */
   addView: function (setting) {
+    if (this.Views[setting.element] !== undefined) {
+      console.log('View already exist')
+      return
+    }
+
     this.Views[setting.element] = new OlView({
       center: setting.center,
       zoom: setting.zoom
@@ -54,14 +64,34 @@ export default {
   },
 
   getView: function (element) {
+    if (this.Views[element] === undefined) {
+      console.log('View undefined')
+      return
+    }
+
     return this.Views[element]
   },
 
   getLayers: function (element) {
+    if (this.Maps[element] === undefined) {
+      console.log('Map undefined')
+      return
+    }
+
     return this.Maps[element]['layers']
   },
 
   getLayer: function (element, name) {
+    if (this.Maps[element] === undefined) {
+      console.log('Map undefined')
+      return
+    }
+
+    if (this.Maps[element]['layers'][name] === undefined) {
+      console.log('Layer undefined')
+      return
+    }
+
     return this.Maps[element]['layers'][name]
   },
 
@@ -77,6 +107,11 @@ export default {
   **   - url (String) -- If XYZ
   */
   addLayer: function (setting) {
+    if (this.Maps[setting.element] === undefined) {
+      console.log('Map undefined')
+      return
+    }
+
     var layer
 
     switch (setting.type) {
@@ -106,23 +141,85 @@ export default {
     return this.Maps[setting.element]['layers'][setting.name]
   },
 
+  /* Change Layer
+  **
+  ** Param
+  ** -- Same as addLayer --
+  */
+  changeLayer: function (setting) {
+    if (this.Maps[setting.element] === undefined) {
+      console.log('Map undefined')
+      return
+    }
+
+    for(var index in this.Maps[setting.element]['layers']) {
+      this.setVisibleLayer(setting.element, index, 0)
+    }
+
+    if (this.Maps[setting.element]['layers'][setting.name] === undefined) {
+      this.addLayer(setting)
+    } else {
+      this.setVisibleLayer(setting.element, setting.name, 1)
+    }
+  }
+
   getVisibleLayer: function (element, name) {
+    if (this.Maps[element] === undefined) {
+      console.log('Map undefined')
+      return
+    }
+
+    if (this.Maps[element]['layers'][name] === undefined) {
+      console.log('Layer undefined')
+      return
+    }
+
     return this.Maps[element]['layers'][name].getVisible()
   },
 
   setVisibleLayer: function (element, name, isVisible) {
+    if (this.Maps[element] === undefined) {
+      console.log('Map undefined')
+      return
+    }
+
+    if (this.Maps[element]['layers'][name] === undefined) {
+      console.log('Layer undefined')
+      return
+    }
+
     this.Maps[element]['layers'][name].setVisible(isVisible)
   },
 
   getExtent: function (element) {
+    if (this.Maps[element] === undefined) {
+      console.log('Map undefined')
+      return
+    }
+
+    if (this.Views[element] === undefined) {
+      console.log('View undefined')
+      return
+    }
+
     return this.Views[element].calculateExtent(this.Maps[element].getSize())
   },
 
   getZoom: function (element) {
+    if (this.Views[element] === undefined) {
+      console.log('View undefined')
+      return
+    }
+
     return this.Views[element].getZoom()
   },
 
   setZoom: function (element, to) {
+    if (this.Views[element] === undefined) {
+      console.log('View undefined')
+      return
+    }
+
     this.Views[element].setZoom(to)
   },
 
@@ -133,10 +230,20 @@ export default {
   },
 
   getCenter: function (element) {
+    if (this.Views[element] === undefined) {
+      console.log('View undefined')
+      return
+    }
+
     return this.Views[element].getCenter()
   },
 
   setCenter: function (element, to) {
+    if (this.Views[element] === undefined) {
+      console.log('View undefined')
+      return
+    }
+
     this.Views[element].setCenter(to)
   },
 
@@ -155,6 +262,11 @@ export default {
   },
 
   updateSize: function (element) {
+    if (this.Maps[element] === undefined) {
+      console.log('Map undefined')
+      return
+    }
+
     this.Maps[element].updateSize()
   },
 
@@ -172,6 +284,16 @@ export default {
   **   - icon (String)
   */
   addMarker: function (setting) {
+    if (this.Maps[setting.element] === undefined) {
+      console.log('Map undefined')
+      return
+    }
+
+    if (this.Maps[setting.element]['layers'][setting.layer] === undefined) {
+      console.log('Layer undefined')
+      return
+    }
+
     var geom = new OlPoint(OlProj.fromLonLat(setting.coord))
     var feature = new OlFeature(geom)
 
@@ -207,6 +329,11 @@ export default {
   **   - enableDoubleClickZoom (Boolean)
   */
   init: function (setting) {
+    if (this.Maps[element] !== undefined) {
+      console.log('Map already exist')
+      return
+    }
+
     this.addView(setting)
 
     this.Maps[setting.element] = new OlMap({
