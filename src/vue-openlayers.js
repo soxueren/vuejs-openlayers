@@ -95,7 +95,7 @@ export default {
     return this.Maps[element]['layers'][name]
   },
 
-  /* Add New Layer
+  /* Set Layer
   **
   ** Param
   ** - setting
@@ -106,12 +106,20 @@ export default {
   **   - type (String {OSM, XYZ, Vector})
   **   - url (String) -- If XYZ
   */
-  addLayer: function (setting) {
+  setLayer: function (setting) {
     if (this.Maps[setting.element] === undefined) {
       console.log('Map undefined')
       return
     }
 
+    if (this.Maps[setting.element]['layers'][setting.name] !== undefined) {
+      this.Maps[setting.element].removeLayer(this.Maps[setting.element]['layers'][setting.name])
+    }
+
+    for (var index in this.Maps[setting.element]['layers']) {
+      this.setVisibleLayer(setting.element, index, 0)
+    }
+    
     var layer
 
     switch (setting.type) {
@@ -139,28 +147,6 @@ export default {
     this.updateSize(setting.element)
 
     return this.Maps[setting.element]['layers'][setting.name]
-  },
-
-  /* Change Layer
-  **
-  ** Param
-  ** -- Same as addLayer --
-  */
-  changeLayer: function (setting) {
-    if (this.Maps[setting.element] === undefined) {
-      console.log('Map undefined')
-      return
-    }
-
-    for (var index in this.Maps[setting.element]['layers']) {
-      this.setVisibleLayer(setting.element, index, 0)
-    }
-
-    if (this.Maps[setting.element]['layers'][setting.name] === undefined) {
-      this.addLayer(setting)
-    } else {
-      this.setVisibleLayer(setting.element, setting.name, 1)
-    }
   },
 
   getVisibleLayer: function (element, name) {

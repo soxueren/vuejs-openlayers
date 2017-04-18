@@ -1,6 +1,6 @@
 {
   "name": "vuejs-openlayers",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "VueJS plugin for Openlayers Map",
   "main": "src/vue-openlayers.js",
   "private": false,
