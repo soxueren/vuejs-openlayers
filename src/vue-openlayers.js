@@ -136,7 +136,7 @@ export default {
 
     this.Maps[setting.element]['layers'][setting.name] = layer
     this.Maps[setting.element].addLayer(this.Maps[setting.element]['layers'][setting.name])
-    this.Maps[setting.element].updateSize()
+    this.updateSize(setting.element)
 
     return this.Maps[setting.element]['layers'][setting.name]
   },
