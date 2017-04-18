@@ -13,7 +13,7 @@ import OlPoint from 'ol/geom/point'
 import OlStyle from 'ol/style/style'
 import OlIcon from 'ol/style/icon'
 
-export default {
+const VueOpenlayers = {
   install: function (Vue) {
     this.Maps = []
     this.Views = []
@@ -353,3 +353,15 @@ export default {
     return this.Maps[setting.element]
   }
 }
+
+var GlobalVue = null
+if (typeof window !== 'undefined') {
+  GlobalVue = window.Vue
+} else if (typeof global !== 'undefined') {
+  GlobalVue = global.Vue
+}
+if (GlobalVue) {
+  GlobalVue.use(VueOpenlayers)
+}
+
+export default VueOpenlayers
