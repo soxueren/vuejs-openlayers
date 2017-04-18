@@ -26,6 +26,11 @@ export default {
     return this.Maps
   },
 
+  /* Get Map
+  **
+  ** Param
+  ** - element (String)
+  */
   getMap: function (element) {
     return this.Maps[element]
   },
@@ -87,6 +92,8 @@ export default {
 
     this.Maps[setting.element]['layers'][setting.name] = layer
     this.Maps[setting.element].addLayer(this.Maps[setting.element]['layers'][setting.name])
+    this.Maps[setting.element].updateSize()
+    
     return this.Maps[setting.element]['layers'][setting.name]
   },
 
