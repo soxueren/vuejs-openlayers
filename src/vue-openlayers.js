@@ -122,8 +122,28 @@ export default {
     return this.Views[element].getZoom()
   },
 
+  setZoom: function (element, to) {
+    this.Views[element].setZoom(to)
+  },
+
+  setZoomAll: function (to) {
+    for (var index in this.Views) {
+      this.Views[index].setZoom(to)
+    }
+  },
+
   getCenter: function (element) {
     return this.Views[element].getCenter()
+  },
+
+  setCenter: function (element, to) {
+    this.Views[element].setCenter(to)
+  },
+
+  setCenterAll: function (to) {
+    for (var index in this.Views) {
+      this.Views[index].setCenter(to)
+    }
   },
 
   transform: function (coord) {
