@@ -8,7 +8,11 @@
   var olXYZ = require('ol/source/xyz');
   var olControl = require('ol/control');
   var olInteraction = require('ol/interaction');
-  var Proj = require('ol/proj');
+  var olProj = require('ol/proj');
+  var olFeature = require('ol/feature');
+  var olPoint = require('ol/geom/point');
+  var olStyle = require('ol/style/style');
+  var olIcon = require('ol/style/icon');
 
   var Maps = [];
   var Views = [];
@@ -82,9 +86,9 @@
           break;
       }
 
-      Maps[setting.element]['layers'][name] = layer;
-      Maps[setting.element].addLayer(Maps[setting.element]['layers'][name]);
-      return layer;
+      Maps[setting.element]['layers'][setting.name] = layer;
+      Maps[setting.element].addLayer(Maps[setting.element]['layers'][setting.name]);
+      return Maps[setting.element]['layers'][setting.name];
     },
 
     getVisibleLayer: function (element, name) {
@@ -109,11 +113,44 @@
 
     transform: function (coord) {
       return Proj.transform(coord, 'EPSG:3857', 'EPSG:4326');
-    }
+    },
 
     transformExtent: function (extent) {
       return Proj.transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
-    }
+    },
+
+    /* Add Marker
+    **
+    ** Param
+    ** - setting
+    **   type = Object
+    **   data =
+    **   - id (String)
+    **   - element (String)
+    **   - layer (String)
+    **   - coord (Array)
+    **   - anchor (Array)
+    **   - icon (String)
+    */
+    addMarker: function (setting) {
+      var geom = new olPoint(olProj.fromLonLat(setting.coord));
+      var feature = new olFeature(geom);
+
+      feature.setStyle([
+        new olStyle({
+          image: new olIcon(({
+            anchor: ((setting.anchor !== undefined) : return setting.anchor ? return [0, 0]),
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            opacity: 1,
+            src: setting.icon
+          }))
+        })
+      ]);
+
+      feature.setId(setting.id);
+      Maps[setting.element]['layers'][setting.layer].getSource().addFeature(feature);
+    },
 
     /* Initialize Openlayers Maps
     **
@@ -140,7 +177,7 @@
           zoom: (setting.enableZoomButton !== undefined && setting.enableZoomButton !== false)
         }),
         target: setting.element,
-        view: Views[element],
+        view: Views[setting.element],
         interactions: olInteraction.defaults({
           dragPan: (setting.enablePan !== undefined && setting.enablePan !== false),
           mouseWheelZoom: (setting.enableMouseWheelZoom !== undefined && setting.enableMouseWheelZoom !== false),
