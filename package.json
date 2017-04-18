@@ -34,5 +34,8 @@
   "homepage": "https://github.com/rukandax/vue-openlayers#readme",
   "dependencies": {
     "ol": "^4.1.0"
+  },
+  "devDependencies": {
+    "babel-loader": "^6.4.1"
   }
 }
