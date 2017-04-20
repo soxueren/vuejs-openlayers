@@ -290,17 +290,17 @@ const VueOpenlayers = {
       return
     }
 
-    var geom = new OlPoint(OlProj.fromLonLat(setting.coord))
+    var geom = new OlPoint(OlProj.fromLonLat((setting.coord === undefined) ? [0, 0] : setting.coord))
     var feature = new OlFeature(geom)
 
     feature.setStyle([
       new OlStyle({
         image: new OlIcon(({
-          anchor: setting.anchor,
+          anchor: (setting.anchor === undefined) ? [0, 0] : setting.anchor,
           anchorXUnits: 'fraction',
           anchorYUnits: 'fraction',
           opacity: 1,
-          src: setting.icon
+          src: (setting.icon === undefined) ? '' : setting.icon
         }))
       })
     ])
