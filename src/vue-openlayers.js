@@ -131,6 +131,7 @@ const VueOpenlayers = {
 
     if (this.Maps[setting.element]['layers'][setting.name] !== undefined) {
       this.Maps[setting.element].removeLayer(this.Maps[setting.element]['layers'][setting.name])
+      this.Maps[setting.element]['layers'][setting.name] = undefined
     }
 
     return this.addLayer(setting)
@@ -193,6 +194,7 @@ const VueOpenlayers = {
 
     if (this.Maps[element]['markers'][name] !== undefined) {
       this.Maps[element].removeLayer(this.Maps[element]['markers'][name])
+      this.Maps[element]['markers'][name] = undefined
     }
 
     this.addMarkerLayer(element, name)
