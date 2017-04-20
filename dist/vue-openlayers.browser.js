@@ -42890,32 +42890,34 @@ const VueOpenlayers = {
       return null
     }
 
-    var layer
+    if (this.Maps[setting.element]['layers'][setting.name] === undefined) {
+      var layer
 
-    switch (setting.type) {
-      case 'OSM':
-        layer = new __WEBPACK_IMPORTED_MODULE_2_ol_layer_tile__["a" /* default */]({
-          source: new __WEBPACK_IMPORTED_MODULE_5_ol_source_osm__["a" /* default */]()
-        })
-        break
-      case 'XYZ':
-        layer = new __WEBPACK_IMPORTED_MODULE_2_ol_layer_tile__["a" /* default */]({
-          source: new __WEBPACK_IMPORTED_MODULE_6_ol_source_xyz__["a" /* default */]({
-            url: setting.url
+      switch (setting.type) {
+        case 'OSM':
+          layer = new __WEBPACK_IMPORTED_MODULE_2_ol_layer_tile__["a" /* default */]({
+            source: new __WEBPACK_IMPORTED_MODULE_5_ol_source_osm__["a" /* default */]()
           })
-        })
-        break
-      case 'Vector':
-        layer = new __WEBPACK_IMPORTED_MODULE_3_ol_layer_vector__["a" /* default */]({
-          source: new __WEBPACK_IMPORTED_MODULE_4_ol_source_vector__["a" /* default */]({features: []})
-        })
-        break
+          break
+        case 'XYZ':
+          layer = new __WEBPACK_IMPORTED_MODULE_2_ol_layer_tile__["a" /* default */]({
+            source: new __WEBPACK_IMPORTED_MODULE_6_ol_source_xyz__["a" /* default */]({
+              url: setting.url
+            })
+          })
+          break
+        case 'Vector':
+          layer = new __WEBPACK_IMPORTED_MODULE_3_ol_layer_vector__["a" /* default */]({
+            source: new __WEBPACK_IMPORTED_MODULE_4_ol_source_vector__["a" /* default */]({features: []})
+          })
+          break
+      }
+
+      this.Maps[setting.element]['layers'][setting.name] = layer
+      this.Maps[setting.element].addLayer(this.Maps[setting.element]['layers'][setting.name])
     }
 
-    this.Maps[setting.element]['layers'][setting.name] = layer
-    this.Maps[setting.element].addLayer(this.Maps[setting.element]['layers'][setting.name])
     this.updateSize(setting.element)
-
     return this.Maps[setting.element]['layers'][setting.name]
   },
 
@@ -42986,6 +42988,19 @@ const VueOpenlayers = {
     return this.Maps[element]['markers'][name]
   },
 
+  setMarkerLayer: function (element, name) {
+    if (this.Maps[element] === undefined) {
+      console.log('Map undefined')
+      return null
+    }
+
+    if (this.Maps[element]['markers'][name] !== undefined) {
+      this.Maps[element].removeLayer(this.Maps[element]['markers'][name])
+    }
+
+    this.addMarkerLayer(element, name)
+  },
+
   getVisibleMarkerLayer: function (element, name) {
     return this.Maps[element]['markers'][name].getVisible()
   },
@@ -43046,6 +43061,10 @@ const VueOpenlayers = {
     }
   },
 
+  fromLonLat: function (coord) {
+    return __WEBPACK_IMPORTED_MODULE_9_ol_proj__["a" /* default */].fromLonLat(coord)
+  },
+
   transform: function (coord) {
     return __WEBPACK_IMPORTED_MODULE_9_ol_proj__["a" /* default */].transform(coord, 'EPSG:3857', 'EPSG:4326')
   },
@@ -43093,23 +43112,27 @@ const VueOpenlayers = {
       return
     }
 
-    var geom = new __WEBPACK_IMPORTED_MODULE_11_ol_geom_point__["a" /* default */](__WEBPACK_IMPORTED_MODULE_9_ol_proj__["a" /* default */].fromLonLat(setting.coord))
+    var geom = new __WEBPACK_IMPORTED_MODULE_11_ol_geom_point__["a" /* default */](__WEBPACK_IMPORTED_MODULE_9_ol_proj__["a" /* default */].fromLonLat((setting.coord === undefined) ? [0, 0] : setting.coord))
     var feature = new __WEBPACK_IMPORTED_MODULE_10_ol_feature__["a" /* default */](geom)
 
     feature.setStyle([
       new __WEBPACK_IMPORTED_MODULE_12_ol_style_style__["a" /* default */]({
         image: new __WEBPACK_IMPORTED_MODULE_13_ol_style_icon__["a" /* default */](({
-          anchor: setting.anchor,
+          anchor: (setting.anchor === undefined) ? [0, 0] : setting.anchor,
           anchorXUnits: 'fraction',
           anchorYUnits: 'fraction',
           opacity: 1,
-          src: setting.icon
+          src: (setting.icon === undefined) ? '' : setting.icon
         }))
       })
     ])
 
     feature.setId(setting.id)
     this.Maps[setting.element]['markers'][setting.layer].getSource().addFeature(feature)
+  },
+
+  animate: function (element, setting) {
+    this.Views[element].animate(setting)
   },
 
   /* Initialize Openlayers Maps
