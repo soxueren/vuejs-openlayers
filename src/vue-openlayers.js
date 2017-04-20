@@ -87,32 +87,34 @@ const VueOpenlayers = {
       return null
     }
 
-    var layer
+    if (this.Maps[setting.element]['layers'][setting.name] === undefined) {
+      var layer
 
-    switch (setting.type) {
-      case 'OSM':
-        layer = new OlTile({
-          source: new OlOSM()
-        })
-        break
-      case 'XYZ':
-        layer = new OlTile({
-          source: new OlXYZ({
-            url: setting.url
+      switch (setting.type) {
+        case 'OSM':
+          layer = new OlTile({
+            source: new OlOSM()
           })
-        })
-        break
-      case 'Vector':
-        layer = new OlLayerVector({
-          source: new OlSourceVector({features: []})
-        })
-        break
+          break
+        case 'XYZ':
+          layer = new OlTile({
+            source: new OlXYZ({
+              url: setting.url
+            })
+          })
+          break
+        case 'Vector':
+          layer = new OlLayerVector({
+            source: new OlSourceVector({features: []})
+          })
+          break
+      }
+
+      this.Maps[setting.element]['layers'][setting.name] = layer
+      this.Maps[setting.element].addLayer(this.Maps[setting.element]['layers'][setting.name])
     }
 
-    this.Maps[setting.element]['layers'][setting.name] = layer
-    this.Maps[setting.element].addLayer(this.Maps[setting.element]['layers'][setting.name])
     this.updateSize(setting.element)
-
     return this.Maps[setting.element]['layers'][setting.name]
   },
 
@@ -183,6 +185,19 @@ const VueOpenlayers = {
     return this.Maps[element]['markers'][name]
   },
 
+  setMarkerLayer: function (element, name) {
+    if (this.Maps[element] === undefined) {
+      console.log('Map undefined')
+      return null
+    }
+
+    if (this.Maps[element]['markers'][name] !== undefined) {
+      this.Maps[element].removeLayer(this.Maps[element]['markers'][name])
+    }
+
+    this.addMarkerLayer(element, name)
+  },
+
   getVisibleMarkerLayer: function (element, name) {
     return this.Maps[element]['markers'][name].getVisible()
   },
@@ -241,6 +256,10 @@ const VueOpenlayers = {
     for (var index in this.Views) {
       this.Views[index].setCenter(to)
     }
+  },
+
+  fromLonLat: function (coord) {
+    return OlProj.fromLonLat(coord)
   },
 
   transform: function (coord) {
@@ -307,6 +326,10 @@ const VueOpenlayers = {
 
     feature.setId(setting.id)
     this.Maps[setting.element]['markers'][setting.layer].getSource().addFeature(feature)
+  },
+
+  animate: function (element, setting) {
+    this.Views[element].animate(setting)
   },
 
   /* Initialize Openlayers Maps
