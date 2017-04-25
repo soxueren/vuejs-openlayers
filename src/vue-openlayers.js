@@ -8,6 +8,7 @@ import OlXYZ from 'ol/source/xyz'
 import OlControl from 'ol/control'
 import OlInteraction from 'ol/interaction'
 import OlProj from 'ol/proj'
+import OlExtent from 'ol/extent'
 import OlFeature from 'ol/feature'
 import OlPoint from 'ol/geom/point'
 import OlStyle from 'ol/style/style'
@@ -15,8 +16,8 @@ import OlIcon from 'ol/style/icon'
 
 const VueOpenlayers = {
   install: function (Vue) {
-    this.Maps = []
-    this.Views = []
+    this.Maps = {}
+    this.Views = {}
 
     Vue.prototype.$openlayers = this
     Vue.openlayers = this
@@ -51,8 +52,8 @@ const VueOpenlayers = {
     }
 
     this.Views[setting.element] = new OlView({
-      center: setting.center,
-      zoom: setting.zoom
+      center: (setting.center === undefined) ? [0, 0] : setting.center,
+      zoom: (setting.zoom === undefined) ? 4 : setting.zoom
     })
 
     return this.Views[setting.element]
@@ -68,6 +69,10 @@ const VueOpenlayers = {
 
   getLayer: function (element, name) {
     return this.Maps[element]['layers'][name]
+  },
+
+  getLastLayerKey: function (element) {
+    return Object.keys(this.Maps[element]['layers'])[(Object.keys(this.Maps[element]['layers']).length - 1)]
   },
 
   /* Add Layer
@@ -334,6 +339,12 @@ const VueOpenlayers = {
     this.Views[element].animate(setting)
   },
 
+  fitPoints: function (element, point) {
+    var ext = OlExtent.boundingExtent(point)
+    ext = OlProj.transformExtent(ext, OlProj.get('EPSG:4326'), OlProj.get('EPSG:3857'))
+    this.Views[element].fit(ext, {duration: 2000})
+  },
+
   /* Initialize Openlayers Maps
   **
   ** Param
@@ -372,8 +383,8 @@ const VueOpenlayers = {
       })
     })
 
-    this.Maps[setting.element]['layers'] = []
-    this.Maps[setting.element]['markers'] = []
+    this.Maps[setting.element]['layers'] = {}
+    this.Maps[setting.element]['markers'] = {}
 
     return this.Maps[setting.element]
   }
