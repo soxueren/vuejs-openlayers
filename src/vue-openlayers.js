@@ -13,8 +13,9 @@ import OlFeature from 'ol/feature'
 import OlPoint from 'ol/geom/point'
 import OlStyle from 'ol/style/style'
 import OlIcon from 'ol/style/icon'
+import OlGeoJSON from 'ol/format/GeoJSON'
 
-const VueOpenlayers = {
+var VueOpenlayers = {
   install: function (Vue) {
     this.Maps = {}
     this.Views = {}
@@ -84,7 +85,7 @@ const VueOpenlayers = {
   **   - element (String)
   **   - name (String)
   **   - type (String {OSM, XYZ, Vector})
-  **   - url (String) -- If XYZ
+  **   - url (String) -- If XYZ, GeoJSON
   */
   addLayer: function (setting) {
     if (this.Maps[setting.element] === undefined) {
@@ -105,6 +106,14 @@ const VueOpenlayers = {
           layer = new OlTile({
             source: new OlXYZ({
               url: setting.url
+            })
+          })
+          break
+        case 'GeoJSON':
+          layer = new OlLayerVector({
+            source: new OlSourceVector({
+              url: setting.url,
+              format: new OlGeoJSON()
             })
           })
           break
