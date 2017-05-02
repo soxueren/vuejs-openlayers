@@ -6,6 +6,7 @@ import OlSourceVector from 'ol/source/vector'
 import OlOSM from 'ol/source/osm'
 import OlXYZ from 'ol/source/xyz'
 import OlControl from 'ol/control'
+import OlControlScaleLine from 'ol/control/scaleline'
 import OlInteraction from 'ol/interaction'
 import OlProj from 'ol/proj'
 import OlExtent from 'ol/extent'
@@ -13,9 +14,8 @@ import OlFeature from 'ol/feature'
 import OlPoint from 'ol/geom/point'
 import OlStyle from 'ol/style/style'
 import OlIcon from 'ol/style/icon'
-import OlGeoJSON from 'ol/format/GeoJSON'
 
-var VueOpenlayers = {
+const VueOpenlayers = {
   install: function (Vue) {
     this.Maps = {}
     this.Views = {}
@@ -85,7 +85,7 @@ var VueOpenlayers = {
   **   - element (String)
   **   - name (String)
   **   - type (String {OSM, XYZ, Vector})
-  **   - url (String) -- If XYZ, GeoJSON
+  **   - url (String) -- If XYZ
   */
   addLayer: function (setting) {
     if (this.Maps[setting.element] === undefined) {
@@ -106,14 +106,6 @@ var VueOpenlayers = {
           layer = new OlTile({
             source: new OlXYZ({
               url: setting.url
-            })
-          })
-          break
-        case 'GeoJSON':
-          layer = new OlLayerVector({
-            source: new OlSourceVector({
-              url: setting.url,
-              format: new OlGeoJSON()
             })
           })
           break
@@ -368,6 +360,7 @@ var VueOpenlayers = {
   **   - enableZoomButton (Boolean)
   **   - enableMouseWheelZoom (Boolean)
   **   - enableDoubleClickZoom (Boolean)
+  **   - enableScaleLine (Boolean)
   */
   init: function (setting) {
     if (this.Maps[setting.element] !== undefined) {
@@ -375,14 +368,25 @@ var VueOpenlayers = {
       return
     }
 
+    var controls = OlControl.defaults({
+      attribution: (setting.enableAttibution !== undefined && setting.enableAttibution !== false),
+      zoom: (setting.enableZoomButton !== undefined && setting.enableZoomButton !== false)
+    })
+
+    if (setting.enableScaleLine !== undefined && setting.enableScaleLine !== false) {
+      controls = OlControl.defaults({
+        attribution: (setting.enableAttibution !== undefined && setting.enableAttibution !== false),
+        zoom: (setting.enableZoomButton !== undefined && setting.enableZoomButton !== false)
+      }).extend([
+        new OlControlScaleLine()
+      ])
+    }
+
     this.addView(setting)
 
     this.Maps[setting.element] = new OlMap({
       layers: [],
-      controls: OlControl.defaults({
-        attribution: (setting.enableAttibution !== undefined && setting.enableAttibution !== false),
-        zoom: (setting.enableZoomButton !== undefined && setting.enableZoomButton !== false)
-      }),
+      controls: controls,
       target: setting.element,
       view: this.Views[setting.element],
       interactions: OlInteraction.defaults({
