@@ -139,12 +139,15 @@ const VueOpenlayers = {
       return null
     }
 
-    if (this.Maps[setting.element]['layers'][setting.name] !== undefined) {
-      this.Maps[setting.element].removeLayer(this.Maps[setting.element]['layers'][setting.name])
-      this.Maps[setting.element]['layers'][setting.name] = undefined
-    }
-
+    this.removeLayer(setting.element, setting.name)
     return this.addLayer(setting)
+  },
+
+  removeLayer: function (element, name) {
+    if (this.Maps[element]['layers'][name] !== undefined) {
+      this.Maps[element].removeLayer(this.Maps[element]['layers'][name])
+      this.Maps[element]['layers'][name] = undefined
+    }
   },
 
   getVisibleLayer: function (element, name) {
@@ -202,12 +205,15 @@ const VueOpenlayers = {
       return null
     }
 
+    this.removeMarkerLayer(element, name)
+    this.addMarkerLayer(element, name)
+  },
+
+  removeMarkerLayer: function (element, name) {
     if (this.Maps[element]['markers'][name] !== undefined) {
       this.Maps[element].removeLayer(this.Maps[element]['markers'][name])
       this.Maps[element]['markers'][name] = undefined
     }
-
-    this.addMarkerLayer(element, name)
   },
 
   getVisibleMarkerLayer: function (element, name) {
