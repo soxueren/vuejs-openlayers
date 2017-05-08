@@ -327,7 +327,7 @@ const VueOpenlayers = {
     feature.setStyle([
       new OlStyle({
         image: new OlIcon(({
-          anchor: (setting.anchor === undefined) ? [0, 0] : setting.anchor,
+          anchor: (setting.anchor === undefined) ? [0.5, 0.5] : setting.anchor,
           anchorXUnits: 'fraction',
           anchorYUnits: 'fraction',
           opacity: 1,
