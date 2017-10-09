@@ -217,7 +217,15 @@ const VueOpenlayers = {
   },
 
   getVisibleMarkerLayer: function (element, name) {
-    return this.Maps[element]['markers'][name].getVisible()
+    if (this.Maps[element] !== undefined) {
+      if (this.Maps[element]['markers'][name] !== undefined) {
+        return this.Maps[element]['markers'][name].getVisible()
+      } else {
+        console.log('Layer undefined')
+      }
+    } else {
+      console.log('Map undefined')
+    }
   },
 
   setVisibleMarkerLayer: function (element, name, isVisible) {
